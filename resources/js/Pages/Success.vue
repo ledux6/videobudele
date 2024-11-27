@@ -95,39 +95,20 @@ async function searchYouTube() {
 </template> -->
 <template>
     <div
-        class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50 min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
+        class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50 min-h-screen flex items-center justify-center selection:bg-[#FF2D20] selection:text-white">
         <div class="w-full max-w-2xl lg:max-w-7xl px-6">
-            <header class="grid grid-cols-2 lg:grid-cols-3 gap-2 py-10 items-center">
-                <nav v-if="canLogin" class="flex justify-end space-x-4">
-                    <Link v-if="$page.props.auth.user" :href="route('dashboard')"
-                        class="rounded-md px-3 py-2 text-black dark:text-white ring-1 ring-transparent transition hover:text-black/70 dark:hover:text-white/80 focus:outline-none focus-visible:ring-[#FF2D20] dark:focus-visible:ring-white">
-                    Dashboard </Link> <template v-else>
-                        <Link :href="route('login')"
-                            class="rounded-md px-3 py-2 text-black dark:text-white ring-1 ring-transparent transition hover:text-black/70 dark:hover:text-white/80 focus:outline-none focus-visible:ring-[#FF2D20] dark:focus-visible:ring-white">
-                        Log in </Link>
-                        <Link v-if="canRegister" :href="route('register')"
-                            class="rounded-md px-3 py-2 text-black dark:text-white ring-1 ring-transparent transition hover:text-black/70 dark:hover:text-white/80 focus:outline-none focus-visible:ring-[#FF2D20] dark:focus-visible:ring-white">
-                        Register </Link>
-                    </template>
-                </nav>
-            </header>
-            <div class="flex justify-center mb-6">
-                <form @submit.prevent="searchYouTube" class="w-full max-w-sm">
-                    <div class="flex items-center border-b border-teal-500 py-2"> <input
-                            class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            type="text" v-model="search" placeholder="Search YouTube" aria-label="Search YouTube" />
-                        <button
-                            class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-                            type="submit"> Ieškoti </button> </div>
-                </form>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div v-for="result in youtubeResults" :key="result.id.videoId" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-                    <Link :href="route('songRegistration', result.id.videoId)">
-                        <p class="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-2">{{ result.snippet.title }}</p> 
-                        <img :src="result.snippet.thumbnails?.medium?.url" class="w-full h-auto rounded-md">
-                    </Link>
-                </div>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg mx-auto" style="max-width: 630px;">
+                <div class="mb-4"> <iframe width="100%" height="315" :src="`https://www.youtube.com/embed/${videoId}`"
+                        title="YouTube video player" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen class="w-full rounded-lg"></iframe> </div>
+                <div class="mb-4"> <label for="email"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Elektroninis paštas</label>
+                    <input type="email" name="email" id="email"
+                        class="mt-1 block w-full px-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-[#FF2D20] focus:border-[#FF2D20] sm:text-sm"
+                        placeholder="Įveskite savo el. paštą" /> </div> <button @click.prevent="registerSong()"
+                    class="w-full bg-[#FF2D20] text-white py-2 px-4 rounded-md shadow-md hover:bg-[#e0241b] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FF2D20]">
+                    Registruoti dainą! </button>
             </div>
         </div>
     </div>
