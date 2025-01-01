@@ -2,30 +2,32 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\SongRegistered;
 use App\Models\Registration;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Mail;
+
 
 class VideoRegistrationController extends Controller
 {
     public function register(Request $request) 
     {
         $code = $this->generateRandomCode(5);
-        // register to DB
         Registration::create(
             [
                 'email' => $request->all()['email'],
-                'youtube_video_id' => $request->all()['vidoeId'],
+                'youtube_video_id' => $request->all()['videoId'],
                 'pseudo_random_id' => $code
             ]
         );
 
-        //if email present send email
         if ($request->all()['email']) {
-            $this->sendEmail();
+            $this->sendEmail($request->all()['email'], $code);
         }
 
-        return Inertia::render('Success', [ 'code' => $code]);
+        return redirect()->route('success', ['code' => $code]);
     }
 
 
@@ -33,18 +35,32 @@ class VideoRegistrationController extends Controller
 
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
         $charactersLength = strlen($characters); 
-        $randomString = ''; 
-        for ($i = 0; $i < $length; $i++) { 
-            $randomString .= $characters[rand(0, $charactersLength - 1)]; 
-        }
+
+        $isUsed = true;
+        do {
+            $randomString = ''; 
+            for ($i = 0; $i < $length; $i++) { 
+                $randomString .= $characters[rand(0, $charactersLength - 1)]; 
+            }
         
-        // check if it's random in DB if not do/while
+            $items = DB::table('registrations')
+                ->where('pseudo_random_id', '=', $randomString)
+                ->get();
+
+            if (!$items->count()) {
+                $isUsed = false;
+            }
+            
+
+        } while($isUsed !== false);
 
         return $randomString; 
     }
 
-    private function sendEmail()
+    private function sendEmail(string $emailAddress, string $code)
     {
+        Mail::to($emailAddress)->send(new SongRegistered($code));
+
         return;    
     }
 }

@@ -1,10 +1,10 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
 import { ref } from 'vue';
 
 let youtubeResults = ref([]);
-const search = ref('Jusu norima daina!')
+const search = ref('')
 
 defineProps({
     canLogin: {
@@ -18,6 +18,7 @@ defineProps({
 async function searchYouTube() {
     try {
         const { data, status } = await axios.get('https://www.googleapis.com/youtube/v3/search', {
+            // transfer this key to .env later on 
             params: {
                 key: 'AIzaSyC77br-9-k1HBkznO36wQTVBOFAaTRi3vI',
                 q: search.value,
@@ -41,58 +42,6 @@ async function searchYouTube() {
 }
 </script>
 
-<!-- <template>
-    <div class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-        <div
-            class="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white"
-        >
-            <div class="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                <header
-                    class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3"
-                >
-                    <nav v-if="canLogin" class="-mx-3 flex flex-1 justify-end">
-                        <Link
-                            v-if="$page.props.auth.user"
-                            :href="route('dashboard')"
-                            class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                        >
-                            Dashboard
-                        </Link>
-
-                        <template v-else>
-                            <Link
-                                :href="route('login')"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Log in
-                            </Link>
-
-                            <Link
-                                v-if="canRegister"
-                                :href="route('register')"
-                                class="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                            >
-                                Register
-                            </Link>
-                        </template>
-                    </nav>
-                </header>
-                <div class="items-center">
-                    <form>
-                        <input type="text" v-model="search">
-                        <button @click.prevent="searchYouTube()">
-                            Search
-                        </button>
-                    </form>
-                </div>
-                <div v-for="result in youtubeResults" :key="result.id.videoId">
-                    <p>{{ result.snippet.title }}</p>
-                    <img :src="result.snippet.thumbnails?.medium?.url">
-                </div>
-            </div>
-        </div>
-    </div>
-</template> -->
 <template>
     <div
         class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50 min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
@@ -115,7 +64,7 @@ async function searchYouTube() {
                 <form @submit.prevent="searchYouTube" class="w-full max-w-sm">
                     <div class="flex items-center border-b border-teal-500 py-2"> <input
                             class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            type="text" v-model="search" placeholder="Search YouTube" aria-label="Search YouTube" />
+                            type="text" v-model="search" placeholder="Ieškoti dainos." aria-label="Search YouTube" />
                         <button
                             class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
                             type="submit"> Ieškoti </button> </div>

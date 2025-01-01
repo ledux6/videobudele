@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\VideoRegistrationController;
+use App\Http\Controllers\RegistrationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -24,9 +25,19 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('song-registration/{videoId}', function($videoId) {
-    return Inertia::render('SongRegistration', [ 'videoId' => $videoId]);
+    return Inertia::render('SongRegistration', [ 'videoId' => $videoId ]);
 })->name('songRegistration');
 
-Route::post('song-registration', [VideoRegistrationController::class, 'register']);
+Route::post('song-registration', [VideoRegistrationController::class, 'register'])->name('song.reg.post');
+
+Route::get('/success/{code}', function($code) {
+    return Inertia::render('Success', ['code' => $code]);
+})->name('success');
+
+Route::get('/code', function() {
+    return Inertia::render('CodeInput');
+});
+
+Route::post('/code', [RegistrationController::class, 'changeRegistrationStatus'])->name('change.status');
 
 require __DIR__.'/auth.php';

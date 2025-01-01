@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('youtube_video_id')->nullable(false);
             $table->string('pseudo_random_id');
             $table->string('email');
+            $table->boolean('waiting')->default(false);
             $table->timestamps();
         });
     }
