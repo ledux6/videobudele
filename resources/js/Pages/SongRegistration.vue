@@ -9,6 +9,20 @@ defineProps({
     },
 });
 
+const apiKey = 'AIzaSyC77br-9-k1HBkznO36wQTVBOFAaTRi3vI'; // Replace with your API key
+
+function getData() {
+    const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${apiKey}`;
+    axios.post(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Video Data:', data);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
 const email = ref();
 
 </script>

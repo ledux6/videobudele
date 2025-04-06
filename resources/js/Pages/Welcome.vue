@@ -1,19 +1,11 @@
 <script setup>
 import { Link } from '@inertiajs/vue3';
 import axios from 'axios';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 
 let youtubeResults = ref([]);
-const search = ref('')
-
-defineProps({
-    canLogin: {
-        type: Boolean,
-    },
-    canRegister: {
-        type: Boolean,
-    },
-});
+const top5 = ref([]);
+const search = ref('');
 
 async function searchYouTube() {
     try {
@@ -23,7 +15,7 @@ async function searchYouTube() {
                 key: 'AIzaSyC77br-9-k1HBkznO36wQTVBOFAaTRi3vI',
                 q: search.value,
                 part: 'snippet',
-                maxResults: 6,
+                maxResults: 30,
                 type: 'video',
                 videoEmbeddable: true
             }
@@ -40,44 +32,184 @@ async function searchYouTube() {
         }
     }
 }
+
+async function fetchTop5() {
+    try {
+        const { data, status } = await axios.get('/registrations/logs/top')
+
+        top5.value = data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.log('error message: ', error.message);
+            return error.message;
+        } else {
+            console.log('unexpected error: ', error);
+            return 'An unexpected error occurred';
+        }
+    }
+}
+
+onMounted(() => {
+    fetchTop5();
+});
 </script>
 
 <template>
-    <div
-        class="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50 min-h-screen flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-        <div class="w-full max-w-2xl lg:max-w-7xl px-6">
-            <header class="grid grid-cols-2 lg:grid-cols-3 gap-2 py-10 items-center">
-                <nav v-if="canLogin" class="flex justify-end space-x-4">
-                    <Link v-if="$page.props.auth.user" :href="route('dashboard')"
-                        class="rounded-md px-3 py-2 text-black dark:text-white ring-1 ring-transparent transition hover:text-black/70 dark:hover:text-white/80 focus:outline-none focus-visible:ring-[#FF2D20] dark:focus-visible:ring-white">
-                    Dashboard </Link> <template v-else>
-                        <Link :href="route('login')"
-                            class="rounded-md px-3 py-2 text-black dark:text-white ring-1 ring-transparent transition hover:text-black/70 dark:hover:text-white/80 focus:outline-none focus-visible:ring-[#FF2D20] dark:focus-visible:ring-white">
-                        Log in </Link>
-                        <Link v-if="canRegister" :href="route('register')"
-                            class="rounded-md px-3 py-2 text-black dark:text-white ring-1 ring-transparent transition hover:text-black/70 dark:hover:text-white/80 focus:outline-none focus-visible:ring-[#FF2D20] dark:focus-visible:ring-white">
-                        Register </Link>
-                    </template>
-                </nav>
-            </header>
-            <div class="flex justify-center mb-6">
-                <form @submit.prevent="searchYouTube" class="w-full max-w-sm">
-                    <div class="flex items-center border-b border-teal-500 py-2"> <input
-                            class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
-                            type="text" v-model="search" placeholder="Ieškoti dainos." aria-label="Search YouTube" />
-                        <button
-                            class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded"
-                            type="submit"> Ieškoti </button> </div>
-                </form>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div v-for="result in youtubeResults" :key="result.id.videoId" class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
-                    <Link :href="route('songRegistration', result.id.videoId)">
-                        <p class="font-semibold text-lg text-gray-800 dark:text-gray-200 mb-2">{{ result.snippet.title }}</p> 
-                        <img :src="result.snippet.thumbnails?.medium?.url" class="w-full h-auto rounded-md">
-                    </Link>
+    <header class="header">
+        <div class="logo">
+            <img class="responsive-img" src="/discobox.png">
+        </div>
+    </header>
+    <div :class="youtubeResults.length === 0 ? 'container-initial height' : 'container-initial'">
+        <div class="content" v-if="youtubeResults.length === 0">
+            <h1 class="p-3">Pasirinkite savo mėgstamą dainą!</h1>
+            <label class="ml-10 flex">Dainos arba atlikėjo pavadinimas</label>
+            <form @submit.prevent="searchYouTube">
+                <input type="text" class="song-input mb-5" v-model="search">
+                <button class="find-song-btn" type="submit">
+                    <svg class="w-4 h-4 mr-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg> 
+                    Ieškoti
+                </button>
+            </form>
+            <div class="flex justify-center mt-5">
+                <div class="items-center" style="flex-direction: column;">
+                    <div>
+                        <h5 class="mb-2 text-2xl font-semibold tracking-tight">
+                            Top
+                        </h5>
+                    </div>
+                    <ol class="list-decimal">
+                        <li v-for="(item, index) in top5" :key="item.id" class="mb-2">
+                            <a :href="`song-registration/${item.video_id}`">{{ item.title.substring(0, 40) }}</a>
+                        </li>
+                    </ol>
                 </div>
+            </div>
+        </div>
+        <div v-else>
+            <h2 class="mt-5 p-1">Pasirinkite savo mėgstamą dainą!</h2>
+            <form @submit.prevent="searchYouTube" class="justify-center flex mb-5">
+                <input type="text" class="song-input" v-model="search">
+                <button class="find-song-btn-sm ml-1 p-2" type="submit">
+                    <svg width="15px" height="15px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+                    </svg> 
+                </button>
+            </form>
+        </div>
+        <div class="flex flex-wrap justify-center">
+            <div v-for="result in youtubeResults" :key="result.id.videoId" class="p-2">
+                <Link 
+                    :href="route('songRegistration', result.id.videoId)"
+                >
+                    <div 
+                        class="card max-w-sm rounded-lg shadow-sm p-5"
+                    >
+                        <div class="img-container">
+                            <img class="rounded-t-md img" :src="result.snippet.thumbnails?.high?.url" alt="" />
+                        </div>
+                        <div>
+                            <h6 class="mt-2 text-2xl tracking-tight">{{ result.snippet.title }}</h6>
+                        </div>
+                    </div>
+                </Link>
             </div>
         </div>
     </div>
 </template>
+<style>
+.container-initial {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-image: url(/background.svg);
+    background-repeat: repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    text-align: center;
+    flex-wrap: wrap;
+}
+
+.height {
+    height: 100vh;
+}
+
+.card {
+    background: rgba(160, 160, 160, 0.36);
+}
+
+.highlight {
+    color: #FF1493;
+}
+
+.content h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+    font-family: fantasy;
+}
+
+.song-input {
+    background: rgba(205, 205, 205, 0.36);
+    width: 80%;
+    padding: 10px;
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+}
+
+.find-song-btn {
+    background-color: #FF1493;
+    color: white;
+    border: none;
+    padding: 20px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+}
+
+.find-song-btn-sm {
+    background-color: #FF1493;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+}
+
+.find-song-btn .icon {
+    margin-right: 10px;
+}
+
+.responsive-img {
+    width: 15%;
+}
+
+.header {
+    background-image: url(/background.svg);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.img-container {
+    width: 320px;
+    height: 180px;
+}
+.img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+</style>

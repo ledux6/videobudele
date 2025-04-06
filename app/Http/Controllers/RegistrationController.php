@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\Registration;
 use Illuminate\Http\Response;
-
+use Inertia\Inertia;
 
 class RegistrationController extends Controller
 {
@@ -25,6 +25,34 @@ class RegistrationController extends Controller
 
     public function list(): Collection
     {
-        return Registration::all();
+        return Registration::orderBy('waiting', 'desc')
+            ->orderBy('createdAt', 'desc')
+            ->get();
+    }
+
+    public function waitinglist(): Collection
+    {
+        return Registration::orderBy('waiting', 'desc')
+            ->orderBy('createdAt', 'desc')
+            ->where('waiting', '=', true)
+            ->get();
+    }
+
+    public function close($id)
+    {
+        $registration = Registration::findOrFail($id);
+        $registration->delete();
+
+        return '';
+    }
+
+    public function clear(): string
+    {
+        $registrations = Registration::all();
+        foreach ($registrations as $registration) {
+            $registration->delete();
+        }
+
+        return '';
     }
 }

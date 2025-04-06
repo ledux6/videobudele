@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Mail\SongRegistered;
 use App\Models\Registration;
+use App\Models\RegistrationLog;
+use GuzzleHttp\Client;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,14 +16,16 @@ class VideoRegistrationController extends Controller
 {
     public function register(Request $request) 
     {
-        $code = $this->generateRandomCode(5);
+        $code = $this->generateCode();
         Registration::create(
             [
                 'email' => $request->all()['email'],
                 'youtube_video_id' => $request->all()['videoId'],
-                'pseudo_random_id' => $code
+                'code' => $code
             ]
         );
+
+        $this->logRegistration($request->all()['videoId']);
 
         if ($request->all()['email']) {
             $this->sendEmail($request->all()['email'], $code);
@@ -31,9 +35,10 @@ class VideoRegistrationController extends Controller
     }
 
 
+    /** @deprecated */
     private function generateRandomCode($length) { 
 
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; 
+        $characters = '0123456789'; 
         $charactersLength = strlen($characters); 
 
         $isUsed = true;
@@ -57,10 +62,76 @@ class VideoRegistrationController extends Controller
         return $randomString; 
     }
 
+    private function generateCode(): string 
+    {
+        $code = '';
+        $registration = Registration::latest()->first();
+        if ($registration) {
+            $code = (int)$registration->code;
+        }
+
+        if ($code === '') {
+            return '001';
+        }
+        
+        if ($code < 10) {
+            $code++;
+            return '00' . (string)$code;
+        }
+
+        if ($code < 100) {
+            $code++;
+            return '0' . (string)$code;
+        }
+
+        return (string)$code++;
+    }
+
     private function sendEmail(string $emailAddress, string $code)
     {
-        Mail::to($emailAddress)->send(new SongRegistered($code));
+        $mail = Mail::to($emailAddress)->send(new SongRegistered($code));
 
-        return;    
+
+        return $mail;    
+    }
+
+    private function logRegistration(string $videoId)
+    {
+        $registrationLog = RegistrationLog::where('video_id', '=', $videoId)
+            ->get()
+            ->first();
+
+        if (!$registrationLog) {
+            $client = new Client();
+            $response = $client->request('GET', 
+                'https://www.googleapis.com/youtube/v3/videos?part=snippet&id=' . $videoId . 
+                '&key=AIzaSyC77br-9-k1HBkznO36wQTVBOFAaTRi3vI' 
+            );
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode === 200) {
+                $body = json_decode($response->getBody()->getContents(), true);
+                $title = $body['items'][0]['snippet']['title'];
+
+                RegistrationLog::create([
+                    'count' => 1, 
+                    'video_id' => $videoId,
+                    'title' => $title
+                ]);
+
+                return;
+            }
+        }
+
+        $registrationLog->count = $registrationLog->count++;
+        $registrationLog->save();
+    }
+    
+
+    public function top5Videos()
+    {
+        return RegistrationLog::orderBy('count', 'desc')
+            ->limit(5)
+            ->get();
     }
 }
