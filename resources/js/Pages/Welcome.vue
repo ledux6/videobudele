@@ -7,12 +7,17 @@ let youtubeResults = ref([]);
 const top5 = ref([]);
 const search = ref('');
 
+function decodeHtmlEntities(text) {
+    const textArea = document.createElement('textarea');
+    textArea.innerHTML = text;
+    return textArea.value;
+}
+
 async function searchYouTube() {
     try {
         const { data, status } = await axios.get('https://www.googleapis.com/youtube/v3/search', {
-            // transfer this key to .env later on 
             params: {
-                key: 'AIzaSyC77br-9-k1HBkznO36wQTVBOFAaTRi3vI',
+                key: import.meta.env.VITE_YOUTUBE_API_KEY,
                 q: search.value,
                 part: 'snippet',
                 maxResults: 30,
@@ -35,7 +40,7 @@ async function searchYouTube() {
 
 async function fetchTop5() {
     try {
-        const { data, status } = await axios.get('/registrations/logs/top')
+        const { data } = await axios.get('/registrations/logs/top')
 
         top5.value = data;
     } catch (error) {
@@ -66,7 +71,7 @@ onMounted(() => {
             <label class="ml-10 flex">Dainos arba atlikėjo pavadinimas</label>
             <form @submit.prevent="searchYouTube">
                 <input type="text" class="song-input mb-5" v-model="search">
-                <button class="find-song-btn" type="submit">
+                <button class="find-song-btn glow-button font-sans font-black" type="submit">
                     <svg class="w-4 h-4 mr-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg> 
@@ -74,15 +79,15 @@ onMounted(() => {
                 </button>
             </form>
             <div class="flex justify-center mt-5">
-                <div class="items-center" style="flex-direction: column;">
+                <div class="items-center">
                     <div>
-                        <h5 class="mb-2 text-2xl font-semibold tracking-tight">
-                            Top
+                        <h5 class="mb-2 font-semibold tracking-tight">
+                            Populiariausi kūriniai
                         </h5>
                     </div>
                     <ol class="list-decimal">
                         <li v-for="(item, index) in top5" :key="item.id" class="mb-2">
-                            <a :href="`song-registration/${item.video_id}`">{{ item.title.substring(0, 40) }}</a>
+                            <a :href="`song-registration/${item.video_id}`" v-html="decodeHtmlEntities(item.title.substring(0, 40))"></a>
                         </li>
                     </ol>
                 </div>
@@ -92,7 +97,7 @@ onMounted(() => {
             <h2 class="mt-5 p-1">Pasirinkite savo mėgstamą dainą!</h2>
             <form @submit.prevent="searchYouTube" class="justify-center flex mb-5">
                 <input type="text" class="song-input" v-model="search">
-                <button class="find-song-btn-sm ml-1 p-2" type="submit">
+                <button class="find-song-btn-sm glow-button ml-1 p-2" type="submit">
                     <svg width="15px" height="15px" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                     </svg> 
@@ -111,7 +116,7 @@ onMounted(() => {
                             <img class="rounded-t-md img" :src="result.snippet.thumbnails?.high?.url" alt="" />
                         </div>
                         <div>
-                            <h6 class="mt-2 text-2xl tracking-tight">{{ result.snippet.title }}</h6>
+                            <h6 class="mt-2 text-2xl tracking-tight" v-html="decodeHtmlEntities(result.snippet.title)"></h6>
                         </div>
                     </div>
                 </Link>
@@ -120,6 +125,8 @@ onMounted(() => {
     </div>
 </template>
 <style>
+@import '../../css/base.css';
+
 .container-initial {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -131,14 +138,6 @@ onMounted(() => {
     color: white;
     text-align: center;
     flex-wrap: wrap;
-}
-
-.height {
-    height: 100vh;
-}
-
-.card {
-    background: rgba(160, 160, 160, 0.36);
 }
 
 .highlight {
@@ -180,7 +179,6 @@ onMounted(() => {
     border: none;
     border-radius: 5px;
     display: inline-flex;
-
     align-items: center;
     justify-content: center;
 }
@@ -189,27 +187,4 @@ onMounted(() => {
     margin-right: 10px;
 }
 
-.responsive-img {
-    width: 15%;
-}
-
-.header {
-    background-image: url(/background.svg);
-}
-
-.logo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.img-container {
-    width: 320px;
-    height: 180px;
-}
-.img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 </style>

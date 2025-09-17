@@ -40,7 +40,7 @@ onMounted(() => {
                 <tbody>
                     <tr v-for="item in registrations" :key="item.id">
                         <td class="border border-gray-300 dark:border-gray-700 p-2">
-                            <a :href="`https://www.youtube.com/watch?v=${item.youtube_video_id}`" target="_blank">{{
+                            <a :href="`https://www.youtube.com/watch?v=${item.youtube_video_id}`" target="_blank" class="youtube-link">{{
                                 item.youtube_video_id }}</a>
                         </td>
                         <td class="border border-gray-300 dark:border-gray-700 p-2">{{ item.pseudo_random_id }}
@@ -88,5 +88,24 @@ onMounted(() => {
      /* Darker red on hover */
      transform: scale(1.05);
      /* Slightly enlarge on hover */
+ }
+
+ .youtube-link {
+     color: #1e40af;
+     /* Blue color for links */
+     text-decoration: underline;
+     /* Underline to indicate it's a link */
+     transition: color 0.3s ease;
+ }
+
+ .youtube-link:hover {
+     color: #3b82f6;
+     /* Lighter blue on hover */
+     text-decoration: underline;
+ }
+
+ .youtube-link:visited {
+     color: #7c3aed;
+     /* Purple color for visited links */
  }
 </style>

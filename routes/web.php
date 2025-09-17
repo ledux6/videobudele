@@ -7,7 +7,7 @@ use App\Http\Controllers\RegistrationController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
-});
+})->name('welcome');
 
 Route::get('song-registration/{videoId}', function($videoId) {
     return Inertia::render('SongRegistration', [ 'videoId' => $videoId ]);

@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Mailables\Attachment;
 
 class SongRegistered extends Mailable
 {
@@ -16,7 +17,7 @@ class SongRegistered extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $code)
+    public function __construct(public string $code, public string $logoBase64)
     {
         //
     }
@@ -38,6 +39,11 @@ class SongRegistered extends Mailable
     {
         return new Content(
             view: 'emails.code',
+            with: [
+                'code' => $this->code,
+                'logo' => $this->logoBase64
+            ],
+    
         );
     }
 
@@ -48,6 +54,15 @@ class SongRegistered extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        $attachments = [];
+        
+        $logoPath = public_path('discobox.png');
+        if (file_exists($logoPath)) {
+            $attachments[] = Attachment::fromPath($logoPath)
+                ->as('logo.png')
+                ->withMime('image/png');
+        }
+        
+        return $attachments;
     }
 }

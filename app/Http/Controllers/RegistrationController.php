@@ -12,7 +12,7 @@ class RegistrationController extends Controller
 {
     public function changeRegistrationStatus(Request $request): Response
     {
-        $registration = Registration::firstWhere('pseudo_random_id', $request->all()['code']);
+        $registration = Registration::firstWhere('code', $request->all()['code']);
         if (!$registration) {
             return Response('Code not found', 400);
         }

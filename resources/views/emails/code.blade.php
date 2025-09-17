@@ -2,14 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- So that mobile will display zoomed in -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- enable media queries for windows phone 8 -->
-    <meta name="format-detection" content="telephone=no"> <!-- disable auto telephone linking in iOS -->
-    <meta name="format-detection" content="date=no"> <!-- disable auto date linking in iOS -->
-    <meta name="format-detection" content="address=no"> <!-- disable auto address linking in iOS -->
-    <meta name="format-detection" content="email=no"> <!-- disable auto email linking in iOS -->
-    <meta name="author" content="Simple-Pleb.com">
-    <title>{{ __('pleb.mail.Verify Title') }} | {{ config('app.name') }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="format-detection" content="date=no">
+    <meta name="format-detection" content="address=no">
+    <meta name="format-detection" content="email=no">
+    <meta name="author" content="VideoBūdelė">
 
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -69,115 +68,151 @@
             .rwd-on-mobile {display: inline-block!important;padding: 5px;}
             .center-on-mobile {text-align: center!important;}
         }
+        
+        /* Custom styles for code display */
+        .code-display {
+            font-family: 'Roboto Slab', Arial, Helvetica, sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #000000;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #666666;
+            font-family: 'Poppins', Arial, Helvetica, sans-serif;
+            font-size: 12px;
+        }
     </style>
 
 </head>
 
-<body  style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; width: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;" bgcolor="#f0f0f0">
+<body style="margin-top: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; width: 100%; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;" bgcolor="#f0f0f0">
 
-<span class="preheader-text"  style="color: transparent; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; visibility: hidden; width: 0; display: none; mso-hide: all;"></span>
+<span class="preheader-text" style="color: transparent; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; visibility: hidden; width: 0; display: none; mso-hide: all;">Jūsų dainos kodas: {{ $code ?? 'N/A' }}</span>
 
-<div   style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;"></div>
+<div style="display:none; font-size:0px; line-height:0px; max-height:0px; max-width:0px; opacity:0; overflow:hidden; visibility:hidden; mso-hide:all;"></div>
 
 <table border="0" align="center" cellpadding="0" cellspacing="0" width="100%" style="width:100%;max-width:100%;">
-    <tr><!-- Outer Table -->
-        <td align="center"  bgcolor="#f0f0f0" data-composer>
+    <tr>
+        <td align="center" bgcolor="#f0f0f0" data-composer>
 
-            <table border="0" align="center" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="width:100%;max-width:100%;" >
-                <!-- lotus-header-2 -->
+            <table border="0" align="center" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="width:100%;max-width:100%;">
+                <!-- Header -->
                 <tr>
-                    <td align="center"  bgcolor="#343e9e" class="container-padding">
-
+                    <td align="center" bgcolor="#343e9e" class="container-padding">
                         <!-- Content -->
                         <table border="0" align="center" cellpadding="0" cellspacing="0" role="presentation" class="row" width="580" style="width:580px;max-width:580px;">
                             <tr>
-                                <td height="40" style="font-size:40px;line-height:40px;" >&nbsp;</td>
+                                <td height="40" style="font-size:40px;line-height:40px;">&nbsp;</td>
                             </tr>
-                            <tr  >
+                            
+                            <!-- Logo Section -->
+                            <tr>
                                 <td align="center">
-                                    <!-- Logo & Webview -->
-                                    <table border="0" align="center" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="width:100%;max-width:100%;">
-                                        <tr>
-                                            <td align="center" class="container-padding">
+                                    {{-- @if(!empty($logoBase64))
+                                        <img src="{{ $logoBase64 }}" alt="Video Būdelė" style="max-width: 200px; height: auto; display: block;">
+                                    @else
+                                        <div style="font-family:'Roboto Slab',Arial,Helvetica,sans-serif;font-size:32px;color:#FFFFFF;font-weight:bold;padding:20px;text-align:center;">
+                                            VideoBūdelė
+                                        </div>
+                                    @endif --}}
+                                            <img src="cid:logo.png" alt="Video Būdelė" style="max-width: 200px; height: auto; display: block;">
 
-                                
-
-                                                <!-- gap -->
-                                                <table border="0" align="right" cellpadding="0" cellspacing="0" role="presentation" class="row" width="20" style="width:20px;max-width:20px;">
-                                                    <tr>
-                                                        <td height="20" style="font-size:20px;line-height:20px;">&nbsp;</td>
-                                                    </tr>
-                                                </table>
-                                                <!-- gap -->
-                                                <!-- column -->
-
-                                            </td>
-                                        </tr>
-                                    </table>
-                                    <!-- Logo & Webview -->
                                 </td>
                             </tr>
-                            <tr  >
-                                <td height="40" style="font-size:40px;line-height:40px;" >&nbsp;</td>
+                            
+                            <tr>
+                                <td height="40" style="font-size:40px;line-height:40px;">&nbsp;</td>
                             </tr>
-                            <tr  >
-                                <td height="40" style="font-size:40px;line-height:40px;" >&nbsp;</td>
-                            </tr>
-                            <tr  >
-                                <td class="center-text"  align="center" style="font-family:'Roboto Slab',Arial,Helvetica,sans-serif;font-size:42px;line-height:52px;font-weight:400;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;">
-
-                                    <div  >
+                            
+                            <!-- Title -->
+                            <tr>
+                                <td class="center-text" align="center" style="font-family:'Roboto Slab',Arial,Helvetica,sans-serif;font-size:42px;line-height:52px;font-weight:400;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;">
+                                    <div>
                                         Jūsų Video Būdelės Kodas
                                     </div>
-
                                 </td>
                             </tr>
-                            <tr  >
-                                <td height="20" style="font-size:20px;line-height:20px;" >&nbsp;</td>
+                            
+                            <tr>
+                                <td height="20" style="font-size:20px;line-height:20px;">&nbsp;</td>
                             </tr>
-                            <tr  >
-                                <td class="center-text"  align="center" style="font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:16px;line-height:26px;font-weight:300;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;">
-
-                                    <div  >
-                                        Dainos Pavadinimas
+                            
+                            <!-- Song Info -->
+                            @if(isset($songTitle))
+                            <tr>
+                                <td class="center-text" align="center" style="font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:18px;line-height:26px;font-weight:400;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;">
+                                    <div>
+                                        <strong>{{ $songTitle }}</strong>
                                     </div>
-
                                 </td>
                             </tr>
-                            <tr  >
-                                <td height="40" style="font-size:40px;line-height:40px;" >&nbsp;</td>
+                            @endif
+                            
+                            @if(isset($artistName))
+                            <tr>
+                                <td class="center-text" align="center" style="font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:16px;line-height:26px;font-weight:300;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;">
+                                    <div>
+                                        {{ $artistName }}
+                                    </div>
+                                </td>
                             </tr>
-                            <tr  >
+                            @endif
+                            
+                            <tr>
+                                <td height="40" style="font-size:40px;line-height:40px;">&nbsp;</td>
+                            </tr>
+                            
+                            <!-- Code Button -->
+                            <tr>
                                 <td align="center">
-                                    <!-- Header Button -->
                                     <table border="0" cellspacing="0" cellpadding="0" role="presentation" align="center" class="center-float">
                                         <tr>
-                                            <td align="center"    bgcolor="#d6df58" style="border-radius: 6px;">
-
-                                                <a href="" target="_blank"    style="font-family:'Roboto Slab',Arial,Helvetica,sans-serif;font-size:16px;line-height:19px;font-weight:700;font-style:normal;color:#000000;text-decoration:none;letter-spacing:0px;padding: 20px 50px 20px 50px;display: inline-block;"><span>KODAS</span></a>
+                                            <td align="center" bgcolor="#d6df58" style="border-radius: 6px;">
+                                                <div class="code-display" style="padding: 20px 50px 20px 50px; display: inline-block;">
+                                                    {{ $code ?? 'KODAS' }}
+                                                </div>
                                             </td>
                                         </tr>
                                     </table>
-                                    <!-- Header Button -->
                                 </td>
                             </tr>
+                            
                             <tr>
-                                <td height="40" style="font-size:40px;line-height:40px;" >&nbsp;</td>
+                                <td height="30" style="font-size:30px;line-height:30px;">&nbsp;</td>
+                            </tr>
+                            
+                            <!-- Instructions -->
+                            <tr>
+                                <td class="center-text" align="center" style="font-family:'Poppins',Arial,Helvetica,sans-serif;font-size:14px;line-height:22px;font-weight:300;font-style:normal;color:#FFFFFF;text-decoration:none;letter-spacing:0px;">
+                                    <div>
+                                        Šį kodą įveskite Video Būdelės ekrane, kad paleisti savo pasirinktą dainą!
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td height="40" style="font-size:40px;line-height:40px;">&nbsp;</td>
                             </tr>
                         </table>
-                        <!-- Content -->
-
-
+                    </td>
+                </tr>
+                
+                <!-- Footer -->
+                <tr>
+                    <td align="center" bgcolor="#f0f0f0">
+                        <div class="footer">
+                            © VideoBūdelė {{ date('Y') }}
+                        </div>
                     </td>
                 </tr>
             </table>
         </td>
-    </tr><!-- Outer-Table -->
-
+    </tr>
 </table>
-<div>
-@VideoBūdelė 2025
-</div>
 
 </body>
 </html>
