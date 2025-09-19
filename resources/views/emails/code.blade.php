@@ -102,27 +102,14 @@
             <table border="0" align="center" cellpadding="0" cellspacing="0" role="presentation" width="100%" style="width:100%;max-width:100%;">
                 <!-- Header -->
                 <tr>
-                    <td align="center" bgcolor="#343e9e" class="container-padding">
+                    <td align="center" bgcolor="#4a349e" class="container-padding">
                         <!-- Content -->
                         <table border="0" align="center" cellpadding="0" cellspacing="0" role="presentation" class="row" width="580" style="width:580px;max-width:580px;">
                             <tr>
                                 <td height="40" style="font-size:40px;line-height:40px;">&nbsp;</td>
                             </tr>
                             
-                            <!-- Logo Section -->
-                            <tr>
-                                <td align="center">
-                                    {{-- @if(!empty($logoBase64))
-                                        <img src="{{ $logoBase64 }}" alt="Video Būdelė" style="max-width: 200px; height: auto; display: block;">
-                                    @else
-                                        <div style="font-family:'Roboto Slab',Arial,Helvetica,sans-serif;font-size:32px;color:#FFFFFF;font-weight:bold;padding:20px;text-align:center;">
-                                            VideoBūdelė
-                                        </div>
-                                    @endif --}}
-                                            <img src="cid:logo.png" alt="Video Būdelė" style="max-width: 200px; height: auto; display: block;">
-
-                                </td>
-                            </tr>
+            
                             
                             <tr>
                                 <td height="40" style="font-size:40px;line-height:40px;">&nbsp;</td>

@@ -17,7 +17,7 @@ class SongRegistered extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(public string $code, public string $logoBase64)
+    public function __construct(public string $code)
     {
         //
     }
@@ -41,28 +41,8 @@ class SongRegistered extends Mailable
             view: 'emails.code',
             with: [
                 'code' => $this->code,
-                'logo' => $this->logoBase64
             ],
     
         );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        $attachments = [];
-        
-        $logoPath = public_path('discobox.png');
-        if (file_exists($logoPath)) {
-            $attachments[] = Attachment::fromPath($logoPath)
-                ->as('logo.png')
-                ->withMime('image/png');
-        }
-        
-        return $attachments;
     }
 }

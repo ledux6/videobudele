@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\VideoRegistrationController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\CommandController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');

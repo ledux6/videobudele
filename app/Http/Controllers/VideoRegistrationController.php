@@ -6,9 +6,7 @@ use App\Mail\SongRegistered;
 use App\Models\Registration;
 use App\Models\RegistrationLog;
 use GuzzleHttp\Client;
-use Inertia\Inertia;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Mail;
 
 
@@ -46,12 +44,12 @@ class VideoRegistrationController extends Controller
             return '001';
         }
         
-        if ($code < 10) {
+        if ($code <= 9) {
             $code++;
             return '00' . (string)$code;
         }
 
-        if ($code < 100) {
+        if ($code <= 99) {
             $code++;
             return '0' . (string)$code;
         }
@@ -61,8 +59,7 @@ class VideoRegistrationController extends Controller
 
     private function sendEmail(string $emailAddress, string $code)
     {
-        $logoBase64 = $this->getLogoBase64();
-        $mail = Mail::to($emailAddress)->send(new SongRegistered($code, $logoBase64));
+        $mail = Mail::to($emailAddress)->send(new SongRegistered($code));
 
         return $mail;    
     }
@@ -105,41 +102,5 @@ class VideoRegistrationController extends Controller
         return RegistrationLog::orderBy('count', 'desc')
             ->limit(5)
             ->get();
-    }
-
-    private function getLogoBase64(): string
-    {
-        $logoPath = public_path('discobox.png');
-        
-        if (!file_exists($logoPath)) {
-            return '';
-        }
-
-        try {
-            $imageData = file_get_contents($logoPath);
-            if ($imageData === false) {
-                return '';
-            }
-
-            // Get the actual MIME type
-            $finfo = finfo_open(FILEINFO_MIME_TYPE);
-            $mimeType = 'image/png'; // default
-            
-            if ($finfo) {
-                $detectedMime = finfo_file($finfo, $logoPath);
-                if ($detectedMime) {
-                    $mimeType = $detectedMime;
-                }
-                finfo_close($finfo);
-            }
-
-            $base64 = base64_encode($imageData);
-            return "data:{$mimeType};base64,{$base64}";
-            
-        } catch (\Exception $e) {
-            // Log the error if needed
-            // \Log::error('Failed to convert logo to base64: ' . $e->getMessage());
-            return '';
-        }
     }
 }
